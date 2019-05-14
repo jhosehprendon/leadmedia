@@ -83,42 +83,38 @@ router.delete('/course/:id', auth, async (req, res) => {
     }
 })
 
+//////////////////////////////////
+////// GET ADVANCED COURSES///////
+/////////////////////////////////
 
-////// GET ADVANCED
 
+///// USER SPECIFIC CORUSES (TEACHER)
 
-// router.get('/courses', auth, checkCourses, async (req, res) => {
-//     const match = {}
-//     const sort = {}
-//     if(req.query.completed) {
-//         match.completed = req.query.completed === 'true'
-//     }
+router.get('/courses', auth, async (req, res) => {
+    const sort = {}
 
-//     if(req.query.sortBy) {
-//         const parts = req.query.sortBy.split(':')
-//         sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
-//     }
+    if(req.query.sortBy) {
+        const parts = req.query.sortBy.split(':')
+        sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
+    }
 
-//     if(req.business) {
-//         try {
-//             await req.business.populate({
-//                 path: 'activity',
-//                 match,
-//                 options: {
-//                     limit: parseInt(req.query.limit),
-//                     skip: parseInt(req.query.skip),
-//                     sort
-//                 }
-//             }).execPopulate()
-    
-//             res.send(req.business.activity)
-//         } catch(e) {
-//             res.status(500).send()
-//         }
-//     } else {
-//         res.status(400).send({ error: 'You have not created a business yet'})
-//     }
-// })
+    try {
+        await req.user.populate({
+            path: 'course',
+            options: {
+                limit: parseInt(req.query.limit),
+                skip: parseInt(req.query.skip),
+                sort
+            }
+        }).execPopulate()
+
+        res.send(req.user.course)
+    } catch(e) {
+        res.status(500).send()
+    }
+})
+
+// ALL COURSES AVALABLE
 
 router.get('/courses/all', auth, async (req, res) => {
     const sort = {}
