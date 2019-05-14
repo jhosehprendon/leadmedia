@@ -83,4 +83,81 @@ router.delete('/course/:id', auth, async (req, res) => {
     }
 })
 
+
+////// GET ADVANCED
+
+
+// router.get('/courses', auth, checkCourses, async (req, res) => {
+//     const match = {}
+//     const sort = {}
+//     if(req.query.completed) {
+//         match.completed = req.query.completed === 'true'
+//     }
+
+//     if(req.query.sortBy) {
+//         const parts = req.query.sortBy.split(':')
+//         sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
+//     }
+
+//     if(req.business) {
+//         try {
+//             await req.business.populate({
+//                 path: 'activity',
+//                 match,
+//                 options: {
+//                     limit: parseInt(req.query.limit),
+//                     skip: parseInt(req.query.skip),
+//                     sort
+//                 }
+//             }).execPopulate()
+    
+//             res.send(req.business.activity)
+//         } catch(e) {
+//             res.status(500).send()
+//         }
+//     } else {
+//         res.status(400).send({ error: 'You have not created a business yet'})
+//     }
+// })
+
+router.get('/courses/all', auth, async (req, res) => {
+    const sort = {}
+    let limit = null
+    let skip = 0
+
+    if(req.query.sortBy) {
+        const parts = req.query.sortBy.split(':')
+        sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
+    }
+
+    if(req.query.limit) {
+        limit = parseInt(req.query.limit) 
+        skip = parseInt(req.query.skip) || 0
+    }
+
+    try {
+  
+        const courses = await Course.find()
+
+        var coursesFiltered = courses.sort(() => {
+            return sort.createdAt
+        })
+
+        if(limit) {
+            var coursesLimit = []
+            for(var i = skip; i < limit+skip; i++) {
+                if(coursesFiltered[i] == null) {
+                    break;
+                }
+                coursesLimit.push(coursesFiltered[i])
+            }
+            return res.send(coursesLimit)
+        }
+        res.send(coursesFiltered)
+    } catch(e) {
+        res.status(500).send()
+    }
+    
+})
+
 module.exports = router
