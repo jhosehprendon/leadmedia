@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-// const Videos = require('./videos');
+const Module = require('./module');
 
 const courseSchema = new mongoose.Schema({
     name: {
@@ -21,15 +21,15 @@ const courseSchema = new mongoose.Schema({
     timestamps: true
 })
 
-courseSchema.virtual('videos', {
-    ref: 'Videos',
+courseSchema.virtual('module', {
+    ref: 'Module',
     localField: '_id',
     foreignField: 'ownerCourse'
 })
 
 courseSchema.pre('findOneAndDelete', async function(next) {
     const course = this
-    await Videos.deleteMany({ ownerBusiness: course._conditions._id })
+    await Module.deleteMany({ ownerCourse: course._conditions._id })
     next()
 })
 

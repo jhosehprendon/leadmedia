@@ -3,6 +3,9 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const Course = require('./course');
+
+
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -104,6 +107,13 @@ userSchema.pre('save', async function(next) {
         user.password = await bcrypt.hash(user.password, 8)
     }
 
+    next()
+})
+
+// Deletes user courses when user is removed
+userSchema.pre('remove', async function(next) {
+    const user = this
+    await Course.deleteMany({ owner: user._id })
     next()
 })
 

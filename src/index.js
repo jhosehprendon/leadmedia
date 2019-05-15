@@ -3,7 +3,7 @@ require('./db/mongoose');
 
 const userRouter = require('./routers/user');
 const courseRouter = require('./routers/course');
-// const activityRouter = require('./routers/activity');
+const moduleRouter = require('./routers/module');
 // const bookingRouter = require('./routers/booking');
 
 const app = express()
@@ -18,7 +18,7 @@ const port = process.env.PORT
 app.use(express.json())
 app.use(userRouter)
 app.use(courseRouter)
-// app.use(activityRouter)
+app.use(moduleRouter)
 // app.use(bookingRouter)
 
 app.listen(port, () => {

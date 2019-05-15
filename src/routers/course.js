@@ -6,7 +6,7 @@ const checkTeacher = require('../middleware/checkTeacher');
 const router = new express.Router();
 
 
-//////// BUSINESS ROUTES ////////
+//////// COURSE ROUTES ////////
 
 router.post('/course', auth, checkTeacher, async (req, res) => {
     const course = new Course({
@@ -29,7 +29,7 @@ router.get('/course/:id', auth, async (req, res) => {
 
     try {
 
-        const course = await Course.findOne({ _id, owner: req.user._id})
+        const course = await Course.findOne({ _id })
 
         if(!course) {
             return res.status(404).send()
@@ -66,20 +66,6 @@ router.patch('/course/:id', auth, async (req, res) => {
         
     }catch(e) {
         res.status(400).send()
-    }
-})
-
-router.delete('/course/:id', auth, async (req, res) => {
-    try {
-
-        const course = await Course.findOneAndDelete({ _id: req.params.id, owner: req.user._id})
-
-        if(!course) {
-            res.send(404).send()
-        }
-        res.send(course)
-    }catch(e) {
-        res.status(500).send()
     }
 })
 
@@ -154,6 +140,21 @@ router.get('/courses/all', auth, async (req, res) => {
         res.status(500).send()
     }
     
+})
+
+// DELETE Course
+
+router.delete('/course/:id', auth, async (req, res) => {
+    try {
+        const course = await Course.findByIdAndRemove({ _id: req.params.id, owner: req.user._id})
+
+        if(!course) {
+            res.send(404).send()
+        }
+        res.send(course)
+    }catch(e) {
+        res.status(500).send()
+    }
 })
 
 module.exports = router
