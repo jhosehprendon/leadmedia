@@ -146,7 +146,7 @@ router.get('/courses/all', auth, async (req, res) => {
 
 router.delete('/course/:id', auth, async (req, res) => {
     try {
-        const course = await Course.findByIdAndRemove({ _id: req.params.id, owner: req.user._id})
+        const course = await Course.findOneAndDelete({ _id: req.params.id, owner: req.user._id})
 
         if(!course) {
             res.send(404).send()

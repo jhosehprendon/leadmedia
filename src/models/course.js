@@ -29,6 +29,7 @@ courseSchema.virtual('module', {
 
 courseSchema.pre('findOneAndDelete', async function(next) {
     const course = this
+    console.log('heeeey')
     await Module.deleteMany({ ownerCourse: course._conditions._id })
     next()
 })
