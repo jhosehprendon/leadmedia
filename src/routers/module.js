@@ -6,7 +6,7 @@ const checkTeacher = require('../middleware/checkTeacher');
 const router = new express.Router();
 
 
-//////// MODULE ROUTES ////////
+//////// MODULE ROUTES - :id (ID of corresponding course) ////////
 
 router.post('/module/:id', auth, checkTeacher, async (req, res) => {
     const modules = new Module({
@@ -55,7 +55,7 @@ router.patch('/module/:id', auth, async (req, res) => {
 
 
 
-// GET ALL MODULES
+// GET ALL MODULES FROM SPECIFIC COURSE (:ID)
 
 router.get('/modules/:id', auth, async (req, res) => {
 

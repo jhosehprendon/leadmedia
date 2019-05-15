@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Lecture = require('./lecture')
 
 const moduleSchema = new mongoose.Schema({
     name: {
@@ -20,17 +21,17 @@ const moduleSchema = new mongoose.Schema({
     timestamps: true
 })
 
-// moduleSchema.virtual('lecture', {
-//     ref: 'Lecture',
-//     localField: '_id',
-//     foreignField: 'ownerModule'
-// })
+moduleSchema.virtual('lecture', {
+    ref: 'Lecture',
+    localField: '_id',
+    foreignField: 'ownerModule'
+})
 
-// moduleSchema.pre('findOneAndDelete', async function(next) {
-//     const course = this
-//     await Videos.deleteMany({ ownerBusiness: course._conditions._id })
-//     next()
-// })
+moduleSchema.pre('findOneAndDelete', async function(next) {
+    const modules = this
+    await Lecture.deleteMany({ ownerModule: modules._conditions._id })
+    next()
+})
 
 
 const Module = mongoose.model('Module', moduleSchema)

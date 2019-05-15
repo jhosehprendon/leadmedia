@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const Course = require('./course');
+const Module = require('./module');
 
 
 const userSchema = new mongoose.Schema({
@@ -114,6 +115,7 @@ userSchema.pre('save', async function(next) {
 userSchema.pre('remove', async function(next) {
     const user = this
     await Course.deleteMany({ owner: user._id })
+    await Module.deleteMany({ owner: user._id })
     next()
 })
 
