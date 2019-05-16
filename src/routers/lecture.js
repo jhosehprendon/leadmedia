@@ -2,13 +2,15 @@ const express = require('express');
 const Lecture = require('../models/lecture');
 const auth = require('../middleware/auth');
 const checkTeacher = require('../middleware/checkTeacher');
+const checkCourse = require('../middleware/checkCourse');
+const checkModule = require('../middleware/checkModule');
 
 const router = new express.Router();
 
 
 //////// MODULE ROUTES - :id (ID of corresponding module) ////////
 
-router.post('/lecture/:idCourse/:idModule', auth, checkTeacher, async (req, res) => {
+router.post('/lecture/:idCourse/:idModule', auth, checkTeacher, checkCourse, checkModule, async (req, res) => {
     const lecture = new Lecture({
         ...req.body,
         ownerModule: req.params.idModule,

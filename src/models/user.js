@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const Course = require('./course');
 const Module = require('./module');
-
+const Lecture = require('./lecture');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -116,6 +116,7 @@ userSchema.pre('remove', async function(next) {
     const user = this
     await Course.deleteMany({ owner: user._id })
     await Module.deleteMany({ owner: user._id })
+    await Lecture.deleteMany({ owner: user._id })
     next()
 })
 

@@ -41,7 +41,7 @@ router.get('/course/:id', auth, async (req, res) => {
 
 })
 
-router.patch('/course/:id', auth, async (req, res) => {
+router.patch('/course/:id', auth, checkTeacher, async (req, res) => {
     const updates = Object.keys(req.body)
     const allowedUpdates = ['name', 'description']
     const isValidOperation = updates.every(el => {

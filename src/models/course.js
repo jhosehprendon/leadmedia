@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
+
 const Module = require('./module');
+const Lecture = require('./lecture');
 
 const courseSchema = new mongoose.Schema({
     name: {
@@ -30,6 +32,7 @@ courseSchema.virtual('module', {
 courseSchema.pre('findOneAndDelete', async function(next) {
     const course = this
     await Module.deleteMany({ ownerCourse: course._conditions._id })
+    await Lecture.deleteMany({ ownerCourse: course._conditions._id })
     next()
 })
 

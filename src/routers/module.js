@@ -2,16 +2,17 @@ const express = require('express');
 const Module = require('../models/module');
 const auth = require('../middleware/auth');
 const checkTeacher = require('../middleware/checkTeacher');
+const checkCourse = require('../middleware/checkCourse');
 
 const router = new express.Router();
 
 
 //////// MODULE ROUTES - :id (ID of corresponding course) ////////
 
-router.post('/module/:id', auth, checkTeacher, async (req, res) => {
+router.post('/module/:idCourse', auth, checkTeacher, checkCourse, async (req, res) => {
     const modules = new Module({
         ...req.body,
-        ownerCourse: req.params.id,
+        ownerCourse: req.params.idCourse,
         owner: req.user._id
     })
 
@@ -25,7 +26,7 @@ router.post('/module/:id', auth, checkTeacher, async (req, res) => {
 })
 
 
-router.patch('/module/:id', auth, async (req, res) => {
+router.patch('/module/:id', auth, checkTeacher, async (req, res) => {
     const updates = Object.keys(req.body)
     const allowedUpdates = ['name']
     const isValidOperation = updates.every(el => {
@@ -57,11 +58,11 @@ router.patch('/module/:id', auth, async (req, res) => {
 
 // GET ALL MODULES FROM SPECIFIC COURSE (:ID)
 
-router.get('/modules/:id', auth, async (req, res) => {
+router.get('/modules/:idCourse', auth, checkCourse, async (req, res) => {
 
     try {
   
-        const modules = await Module.find({ ownerCourse: req.params.id })
+        const modules = await Module.find({ ownerCourse: req.params.idCourse })
      
         res.send(modules)
     } catch(e) {
@@ -72,7 +73,7 @@ router.get('/modules/:id', auth, async (req, res) => {
 
 // DELETE Module
 
-router.delete('/module/:id', auth, async (req, res) => {
+router.delete('/module/:id', auth, checkTeacher, async (req, res) => {
     try {
         const modules = await Module.findByIdAndRemove({ _id: req.params.id, owner: req.user._id})
 
