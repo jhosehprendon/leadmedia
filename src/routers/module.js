@@ -58,7 +58,7 @@ router.patch('/module/:id', auth, checkTeacher, async (req, res) => {
 
 // GET ALL MODULES FROM SPECIFIC COURSE (:ID)
 
-router.get('/modules/:idCourse', auth, checkCourse, async (req, res) => {
+router.get('/modules/:idCourse', auth, async (req, res) => {
 
     try {
   
